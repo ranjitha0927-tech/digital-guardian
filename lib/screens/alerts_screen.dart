@@ -1,64 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class AlertsScreen extends StatelessWidget {
+  const AlertsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Alerts"),
-        backgroundColor: Colors.green,
+        title: const Text("Security Alerts"),
+        centerTitle: true,
       ),
-      body: ListView(
-        padding: EdgeInsets.all(16),
-        children: [
 
-          alertCard(
-            Icons.warning,
-            "Blocked Website Attempt",
-            "Child tried accessing restricted site",
-            "2 mins ago",
-            Colors.red,
-          ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('alerts').snapshots(),
+        builder: (context, snapshot) {
 
-          alertCard(
-            Icons.access_time,
-            "Screen Time Limit Exceeded",
-            "Device used beyond allowed time",
-            "1 hour ago",
-            Colors.orange,
-          ),
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }
 
-          alertCard(
-            Icons.location_on,
-            "Location Update",
-            "Child reached school area",
-            "Today 8:45 AM",
-            Colors.blue,
-          ),
-        ],
-      ),
-    );
-  }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(
+              child: Text(
+                "No Alerts Found",
+                style: TextStyle(fontSize: 18),
+              ),
+            );
+          }
 
-  Widget alertCard(IconData icon, String title, String subtitle,
-      String time, Color color) {
-    return Card(
-      margin: EdgeInsets.only(bottom: 15),
-      elevation: 3,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: color.withOpacity(0.2),
-          child: Icon(icon, color: color),
-        ),
-        title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: Text(subtitle),
-        trailing: Text(
-          time,
-          style: TextStyle(fontSize: 12, color: Colors.grey),
-        ),
+          final alerts = snapshot.data!.docs;
+
+          return ListView.builder(
+            itemCount: alerts.length,
+            itemBuilder: (context, index) {
+
+              final data = alerts[index].data() as Map<String, dynamic>;
+
+              String alert = data['alert']?.toString() ?? "Suspicious Activity";
+              String app = data['app']?.toString() ?? "Unknown App";
+              String time = data['time']?.toString() ?? "Unknown Time";
+
+              return Card(
+                margin: const EdgeInsets.all(10),
+                child: ListTile(
+                  leading: const Icon(
+                    Icons.warning,
+                    color: Colors.red,
+                    size: 30,
+                  ),
+
+                  title: Text(
+                    alert,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+
+                  subtitle: Text("$app • $time"),
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
