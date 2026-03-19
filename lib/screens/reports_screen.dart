@@ -1,55 +1,46 @@
 import 'package:flutter/material.dart';
-import 'package:fl_chart/fl_chart.dart';
 
 class ReportsScreen extends StatelessWidget {
+  const ReportsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Weekly Screen Time"),
-        backgroundColor: Colors.green,
+        title: const Text("Activity Reports"),
+        centerTitle: true,
       ),
-      body: Padding(
-        padding: EdgeInsets.all(20),
+
+      body: Center(
         child: Column(
-          children: [
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: const [
+
+            Icon(
+              Icons.bar_chart,
+              size: 90,
+              color: Colors.blue,
+            ),
+
             SizedBox(height: 20),
-            Expanded(
-              child: BarChart(
-                BarChartData(
-                  borderData: FlBorderData(show: false),
-                  titlesData: FlTitlesData(
-                    show: true,
-                  ),
-                  barGroups: [
-                    makeGroupData(0, 2),
-                    makeGroupData(1, 3),
-                    makeGroupData(2, 4),
-                    makeGroupData(3, 1.5),
-                    makeGroupData(4, 3.5),
-                    makeGroupData(5, 2.5),
-                    makeGroupData(6, 4.5),
-                  ],
-                ),
+
+            Text(
+              "Weekly Monitoring Report",
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
               ),
             ),
+
+            SizedBox(height: 15),
+
+            Text("• Suspicious apps detected: 2"),
+            Text("• Blocked websites: 3"),
+            Text("• Screen usage today: 4 hours"),
+            Text("• Unsafe content attempts: 1"),
           ],
         ),
       ),
-    );
-  }
-
-  BarChartGroupData makeGroupData(int x, double y) {
-    return BarChartGroupData(
-      x: x,
-      barRods: [
-        BarChartRodData(
-          toY: y,
-          width: 18,
-          color: Colors.green,
-          borderRadius: BorderRadius.circular(6),
-        ),
-      ],
     );
   }
 }
