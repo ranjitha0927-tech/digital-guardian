@@ -1,72 +1,95 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_screen.dart';
 
 class SettingsScreen extends StatelessWidget {
+  const SettingsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Settings"),
-        backgroundColor: Colors.green,
+        title: const Text("Settings"),
+        centerTitle: true,
       ),
+
       body: ListView(
-        padding: EdgeInsets.all(16),
         children: [
 
-          // Profile Section
           ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.green.shade100,
-              child: Icon(Icons.person, color: Colors.green),
-            ),
-            title: Text("Parent Profile"),
-            subtitle: Text("View and edit profile"),
-            trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-
-          Divider(),
-
-          ListTile(
-            leading: Icon(Icons.child_care, color: Colors.green),
-            title: Text("Child Information"),
-            trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-
-          Divider(),
-
-          ListTile(
-            leading: Icon(Icons.notifications, color: Colors.green),
-            title: Text("Notification Settings"),
-            trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-
-          Divider(),
-
-          ListTile(
-            leading: Icon(Icons.lock, color: Colors.green),
-            title: Text("Change Password"),
-            trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {},
-          ),
-
-          SizedBox(height: 40),
-
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-              padding: EdgeInsets.symmetric(vertical: 15),
-            ),
-            onPressed: () {
-              Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(builder: (context) => LoginScreen()),
-                (route) => false,
+            leading: const Icon(Icons.phone_android),
+            title: const Text("Child Device"),
+            subtitle: const Text("Connected"),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text("Device Info"),
+                  content: const Text("Child device is connected."),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("OK"),
+                    ),
+                  ],
+                ),
               );
             },
-            child: Text("Logout"),
+          ),
+
+          const Divider(),
+
+          ListTile(
+            leading: const Icon(Icons.notifications),
+            title: const Text("Notifications"),
+            subtitle: const Text("Enabled"),
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Notifications enabled")),
+              );
+            },
+          ),
+
+          const Divider(),
+
+          ListTile(
+            leading: const Icon(Icons.security),
+            title: const Text("Monitoring Status"),
+            subtitle: const Text("Active"),
+          ),
+
+          const Divider(),
+
+          ListTile(
+            leading: const Icon(Icons.info),
+            title: const Text("App Version"),
+            subtitle: const Text("v1.0"),
+            onTap: () {
+              showAboutDialog(
+                context: context,
+                applicationName: "Digital Guardian",
+                applicationVersion: "1.0",
+              );
+            },
+          ),
+
+          const Divider(),
+
+          
+          ListTile(
+            leading: const Icon(Icons.logout, color: Colors.red),
+            title: const Text("Logout"),
+            onTap: () async {
+
+              await FirebaseAuth.instance.signOut();
+
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => const LoginScreen(),
+                ),
+              );
+            },
           ),
         ],
       ),
