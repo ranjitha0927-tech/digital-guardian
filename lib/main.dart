@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'screens/dashboard_screen.dart';
+import 'screens/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -10,18 +10,17 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(const MyApp());
+  runApp(const DigitalGuardian());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class DigitalGuardian extends StatelessWidget {
+  const DigitalGuardian({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return const MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Digital Guardian',
-      home: DashboardScreen(),
+      home: SplashScreen(),
     );
   }
 }
