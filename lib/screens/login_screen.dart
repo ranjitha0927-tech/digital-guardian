@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'register_screen.dart';
-import 'dashboard_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -12,114 +11,138 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
 
-  final TextEditingController emailController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
 
-  Future<void> loginUser() async {
+  bool isHidden = true;
+  bool isLogin = true;
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> handleAuth() async {
     try {
-
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: emailController.text.trim(),
-        password: passwordController.text.trim(),
-      );
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Login Successful")),
-      );
+      if (isLogin) {
+        await _auth.signInWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+      } else {
+        await _auth.createUserWithEmailAndPassword(
+          email: emailController.text.trim(),
+          password: passwordController.text.trim(),
+        );
+      }
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const DashboardScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const HomeScreen()),
       );
 
     } catch (e) {
-
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Login Failed: $e")),
+        SnackBar(content: Text(e.toString())),
       );
-
     }
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F7FA),
+
       body: Center(
-        child: Padding(
+        child: SingleChildScrollView(
           padding: const EdgeInsets.all(20),
 
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
             children: [
 
               const Icon(
                 Icons.security,
-                size: 80,
-                color: Colors.blue,
+                size: 90,
+                color: Colors.blueAccent,
               ),
 
-              const SizedBox(height: 20),
+              const SizedBox(height: 10),
 
               const Text(
                 "Digital Guardian",
                 style: TextStyle(
-                  fontSize: 26,
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
                 ),
               ),
 
               const SizedBox(height: 30),
 
+            
               TextField(
                 controller: emailController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Email",
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
                 ),
               ),
 
               const SizedBox(height: 15),
 
+              
               TextField(
                 controller: passwordController,
-                obscureText: true,
-                decoration: const InputDecoration(
+                obscureText: isHidden,
+                decoration: InputDecoration(
                   labelText: "Password",
-                  border: OutlineInputBorder(),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      isHidden ? Icons.visibility : Icons.visibility_off,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        isHidden = !isHidden;
+                      });
+                    },
+                  ),
                 ),
               ),
 
               const SizedBox(height: 20),
 
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: loginUser,
-                  child: const Text("Login"),
+              
+              ElevatedButton(
+                onPressed: handleAuth,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blueAccent,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 50,
+                    vertical: 15,
+                  ),
+                ),
+                child: Text(
+                  isLogin ? "Login" : "Register",
+                  style: const TextStyle(fontSize: 16),
                 ),
               ),
 
               const SizedBox(height: 10),
 
+              
               TextButton(
                 onPressed: () {
-
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => const RegisterScreen(),
-                    ),
-                  );
-
+                  setState(() {
+                    isLogin = !isLogin;
+                  });
                 },
-                child: const Text(
-                  "Don't have an account? Register",
+                child: Text(
+                  isLogin
+                      ? "Don't have an account? Register"
+                      : "Already have an account? Login",
                 ),
               ),
-
             ],
           ),
         ),
