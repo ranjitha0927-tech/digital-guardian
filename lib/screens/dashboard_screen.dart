@@ -1,136 +1,165 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
 
-  // Function to add alert
-     void addAlert() async {
-  var now = DateTime.now();
-
-  String time =
-      "${now.hour}:${now.minute.toString().padLeft(2, '0')}";
-
-  await FirebaseFirestore.instance.collection('alerts').add({
-    'title': 'Inappropriate Content Detected',
-    'description': 'Child accessed restricted website',
-    'time': time,
-  });
-}
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Digital Guardian"),
-        centerTitle: true,
-      ),
-      body: Column(
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+
+  int selectedIndex = 0;
+
+  Future<void> scanDevice() async {
+    await FirebaseFirestore.instance.collection('alerts').add({
+      'alert': '18+ Content Detected',
+      'app': 'Unknown App',
+      'time': DateTime.now().toString(),
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text("Scan Completed")),
+    );
+  }
+
+  Widget homePage() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
-          const SizedBox(height: 20),
-
-          // Security status card
-          Container(
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(20),
-            decoration: BoxDecoration(
-              color: Colors.green[100],
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: const Column(
-              children: [
-                Icon(Icons.security, size: 40, color: Colors.green),
-                SizedBox(height: 10),
-                Text(
-                  "Device Secure",
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-          ),
-
-          const SizedBox(height: 10),
-
-          // Scan button
-          ElevatedButton(
-            onPressed: () {
-              addAlert();
-            },
-            child: const Text("Scan Device"),
-          ),
+          Icon(Icons.security, size: 100, color: Colors.blue),
 
           const SizedBox(height: 20),
 
           const Text(
-            "Security Alerts",
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
+            "Digital Guardian",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
 
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
 
-          Expanded(
-            child: StreamBuilder<QuerySnapshot>(
-              stream: FirebaseFirestore.instance
-                  .collection('alerts')
-                  .snapshots(),
-              builder: (context, snapshot) {
-
-                if (snapshot.connectionState ==
-                    ConnectionState.waiting) {
-                  return const Center(
-                      child: CircularProgressIndicator());
-                }
-
-                if (!snapshot.hasData ||
-                    snapshot.data!.docs.isEmpty) {
-                  return const Center(
-                    child: Text("No alerts found"),
-                  );
-                }
-
-                final alerts = snapshot.data!.docs;
-
-                return ListView.builder(
-                  itemCount: alerts.length,
-                  itemBuilder: (context, index) {
-
-                    var data = alerts[index];
-
-                    return Card(
-                      margin: const EdgeInsets.all(10),
-                      child: ListTile(
-                        leading: const Icon(
-                          Icons.warning,
-                          color: Colors.red,
-                        ),
-                        title: Text(data['title']),
-                        subtitle: Text(
-                          "${data['description']} \n${data['time']}",
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-          ),
-
-          const Padding(
-            padding: EdgeInsets.all(10),
-            child: Text(
-              "Developed by Ranjitha © 2026",
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey,
-              ),
-            ),
+          ElevatedButton(
+            onPressed: scanDevice,
+            child: const Text("Scan Device"),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget alertsPage() {
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance.collection('alerts').snapshots(),
+      builder: (context, snapshot) {
+
+        if (!snapshot.hasData) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        final docs = snapshot.data!.docs;
+
+        if (docs.isEmpty) {
+          return const Center(child: Text("No Alerts Found"));
+        }
+
+        return ListView(
+          children: docs.map((doc) {
+
+            final data = doc.data() as Map;
+
+            return ListTile(
+              leading: const Icon(Icons.warning, color: Colors.red),
+              title: Text(data['alert']),
+              subtitle: Text("${data['app']} - ${data['time']}"),
+            );
+
+          }).toList(),
+        );
+      },
+    );
+  }
+
+  Widget reportsPage() {
+    return const Center(
+      child: Text(
+        "Reports Page",
+        style: TextStyle(fontSize: 18),
+      ),
+    );
+  }
+
+  Widget settingsPage() {
+    return const Center(
+      child: Text(
+        "Settings Page",
+        style: TextStyle(fontSize: 18),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    final pages = [
+      homePage(),
+      alertsPage(),
+      reportsPage(),
+      settingsPage(),
+    ];
+
+    return Scaffold(
+
+      appBar: AppBar(
+        title: const Text("Digital Guardian"),
+        centerTitle: true,
+      ),
+
+      body: pages[selectedIndex],
+
+      bottomNavigationBar: BottomNavigationBar(
+  currentIndex: selectedIndex,
+  selectedItemColor: Colors.blue,
+  unselectedItemColor: Colors.grey,
+
+  onTap: (index) {
+    setState(() {
+      selectedIndex = index;
+    });
+  },
+
+  items: const [
+    BottomNavigationBarItem(
+      icon: Icon(Icons.home),
+      label: "Home",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.warning),
+      label: "Alerts",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.bar_chart),
+      label: "Reports",
+    ),
+    BottomNavigationBarItem(
+      icon: Icon(Icons.settings),
+      label: "Settings",
+    ),
+  ],
+),
+
+          
+
+      bottomSheet: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(10),
+        color: Colors.grey[200],
+        child: const Text(
+          "Developed by Ranjitha ©2026",
+          textAlign: TextAlign.center,
+        ),
       ),
     );
   }
