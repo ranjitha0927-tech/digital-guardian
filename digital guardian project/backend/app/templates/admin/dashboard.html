@@ -1,0 +1,266 @@
+{% extends "admin/base.html" %}
+{% block title %}Dashboard | Digital Guardian Admin{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Total Parents Registered</div><div class="metric-value">{{ metrics.total_parents }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Total Children Added</div><div class="metric-value">{{ metrics.total_children }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Restricted Searches Detected</div><div class="metric-value">{{ metrics.total_restricted }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Alerts Generated</div><div class="metric-value">{{ metrics.total_alerts }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Safe Searches Logged</div><div class="metric-value">{{ metrics.total_safe_results }}</div></div></div>
+  <div class="col-md-6 col-xl-3"><div class="metric-card"><div class="metric-label">Parent SMS Logs</div><div class="metric-value">{{ metrics.total_notifications }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Reports Generated</div><div class="metric-value">{{ metrics.total_reports }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Safe Browsing Score</div><div class="metric-value">{{ metrics.safe_score }}%</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Active Monitoring Status</div><div class="metric-value small">{{ metrics.monitoring_status }}</div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Activity Logs</div><div class="metric-value">{{ metrics.total_activities }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Average AI Risk Score</div><div class="metric-value">{{ metrics.avg_risk_score }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Behavior Anomalies Detected</div><div class="metric-value">{{ metrics.anomaly_total }}</div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Admin Audit Logs</div><div class="metric-value">{{ metrics.recent_audit_logs|length }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Top Parent Account</div><div class="metric-value small">{{ metrics.top_parent_name }}</div></div></div>
+  <div class="col-md-6 col-xl-4"><div class="metric-card"><div class="metric-label">Highest Risk Child</div><div class="metric-value small">{{ metrics.highest_risk_child_name }} ({{ metrics.highest_risk_child_score }})</div></div></div>
+</div>
+
+<div class="row g-4 mb-4">
+  <div class="col-xl-8">
+    <div class="panel-card">
+      <div class="panel-header">
+        <div>
+          <h3>Monitoring Trend</h3>
+          <p>Safe vs restricted activity based on generated reports.</p>
+        </div>
+      </div>
+      <canvas id="trendChart" height="120"></canvas>
+    </div>
+  </div>
+  <div class="col-xl-4">
+    <div class="panel-card">
+      <div class="panel-header">
+        <div>
+          <h3>Restriction Categories</h3>
+          <p>Keyword match distribution by category.</p>
+        </div>
+      </div>
+      <canvas id="categoryChart" height="220"></canvas>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-xl-6">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Recent Alerts</h3><p>Logical alerts triggered from actual monitoring events.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Title</th><th>Child</th><th>Severity</th><th>Time</th></tr></thead>
+          <tbody>
+            {% for alert in metrics.recent_alerts %}
+            <tr>
+              <td>{{ alert.title }}</td>
+              <td>{{ alert.child.child_name if alert.child else "-" }}</td>
+              <td><span class="badge severity-{{ alert.severity }}">{{ alert.severity|title }}</span></td>
+              <td>{{ alert.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-secondary py-4">No alerts generated yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Recent Browsing History</h3><p>Last monitored search attempts across registered children.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Search Query</th><th>Child</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody>
+            {% for item in metrics.recent_history %}
+            <tr>
+              <td>{{ item.search_query }}</td>
+              <td>{{ item.child.child_name if item.child else "-" }}</td>
+              <td><span class="badge {% if item.is_restricted %}bg-danger-subtle text-danger{% else %}bg-success-subtle text-success{% endif %}">{{ 'Restricted' if item.is_restricted else 'Safe' }}</span></td>
+              <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-secondary py-4">No browsing history recorded yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mt-1">
+  <div class="col-xl-6">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Recent Safe Search Results</h3><p>Smart safe-result cards saved for approved queries.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Query</th><th>Topic</th><th>Child</th><th>Time</th></tr></thead>
+          <tbody>
+            {% for item in metrics.recent_safe_results %}
+            <tr>
+              <td>{{ item.search_query }}</td>
+              <td>{{ item.search_topic or 'general' }}</td>
+              <td>{{ item.child.child_name if item.child else '-' }}</td>
+              <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-secondary py-4">No safe search results stored yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <div class="col-xl-6">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Notification Log Summary</h3><p>SMS delivery attempts linked to restricted activity.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Title</th><th>Recipient</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody>
+            {% for item in metrics.recent_notifications %}
+            <tr>
+              <td>{{ item.title }}</td>
+              <td>{{ item.recipient }}</td>
+              <td>{{ item.delivery_status|title }}</td>
+              <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4" class="text-center text-secondary py-4">No SMS notification logs available.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mt-1">
+  <div class="col-xl-12">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>AI Behavioral Risk Insights</h3><p>Explainable risk scoring, anomaly detection, and recommendations per child.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Child</th><th>Risk Score</th><th>Level</th><th>Anomalies</th><th>Top Factors</th><th>Recommendation</th></tr></thead>
+          <tbody>
+            {% for item in metrics.child_ai_insights %}
+            <tr>
+              <td>{{ item.child_name }}</td>
+              <td>{{ item.risk_score }}</td>
+              <td><span class="badge severity-{{ item.risk_level }}">{{ item.risk_level|title }}</span></td>
+              <td>{{ item.anomalies|join(', ') if item.anomalies else 'None' }}</td>
+              <td>{{ item.top_factors|map(attribute='name')|join(', ') if item.top_factors else 'Low-risk baseline' }}</td>
+              <td>{{ item.recommendations[0] if item.recommendations else '-' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="6" class="text-center text-secondary py-4">No child insights generated yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mt-1">
+  <div class="col-xl-12">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Recent ML Classification Logs</h3><p>Hybrid SAFE vs UNSAFE decisions with anomaly awareness.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Query</th><th>Child</th><th>Rule</th><th>ML</th><th>Final</th><th>Confidence</th><th>Anomaly</th></tr></thead>
+          <tbody>
+            {% for item in metrics.recent_ml_predictions %}
+            <tr>
+              <td>{{ item.input_text }}</td>
+              <td>{{ item.child.child_name if item.child else '-' }}</td>
+              <td>{{ item.rule_based_label|title }}</td>
+              <td>{{ item.ml_label|title }}</td>
+              <td><span class="badge severity-{{ 'high' if item.final_label == 'unsafe' else 'low' }}">{{ item.final_label|title }}</span></td>
+              <td>{{ (item.confidence_score * 100)|round(1) }}%</td>
+              <td>{{ 'Yes' if item.anomaly_detected else 'No' }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7" class="text-center text-secondary py-4">No ML decisions recorded yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mt-1">
+  <div class="col-xl-12">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Admin Audit Trail</h3><p>Track login, CRUD, and settings actions made from the console.</p></div></div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle admin-table">
+          <thead><tr><th>Action</th><th>Entity</th><th>Details</th><th>Admin</th><th>Time</th></tr></thead>
+          <tbody>
+            {% for item in metrics.recent_audit_logs %}
+            <tr>
+              <td><span class="badge bg-primary-subtle text-primary">{{ item.action|title }}</span></td>
+              <td>{{ item.entity_type|replace('_', ' ')|title }}</td>
+              <td>{{ item.entity_name or item.details or '-' }}</td>
+              <td>{{ item.admin.username if item.admin else '-' }}</td>
+              <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5" class="text-center text-secondary py-4">No audit logs captured yet.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  const trendCtx = document.getElementById('trendChart');
+  new Chart(trendCtx, {
+    type: 'line',
+    data: {
+      labels: {{ metrics.trend_labels|safe }},
+      datasets: [
+        {
+          label: 'Safe Sessions',
+          data: {{ metrics.safe_trend|safe }},
+          borderColor: '#56a8ff',
+          backgroundColor: 'rgba(86, 168, 255, 0.16)',
+          tension: 0.35,
+          fill: true
+        },
+        {
+          label: 'Restricted Sessions',
+          data: {{ metrics.restricted_trend|safe }},
+          borderColor: '#ff6c8a',
+          backgroundColor: 'rgba(255, 108, 138, 0.12)',
+          tension: 0.35,
+          fill: true
+        }
+      ]
+    },
+    options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+  });
+
+  const categoryCtx = document.getElementById('categoryChart');
+  new Chart(categoryCtx, {
+    type: 'doughnut',
+    data: {
+      labels: {{ metrics.category_labels|safe }},
+      datasets: [{
+        data: {{ metrics.category_values|safe }},
+        backgroundColor: ['#5b8cff', '#89d0ff', '#ff9eb3', '#8ce5c1', '#d4b2ff']
+      }]
+    },
+    options: { plugins: { legend: { position: 'bottom' } } }
+  });
+</script>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends "admin/base.html" %}
+{% block page_title %}ML Monitoring{% endblock %}
+{% block page_subtitle %}Hybrid rule-engine and machine-learning prediction logs with anomaly detection evidence.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <div>
+      <h3>Prediction Timeline</h3>
+      <p>Review rule-based labels, ML output, final decisions, confidence, and anomaly scores.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Query</th><th>Child</th><th>Rule</th><th>ML</th><th>Final</th><th>Confidence</th><th>Anomaly</th><th>Time</th></tr></thead>
+      <tbody>
+        {% for item in predictions %}
+        <tr>
+          <td>{{ item.input_text }}</td>
+          <td>{{ item.child.child_name if item.child else '-' }}</td>
+          <td>{{ item.rule_based_label|title }}</td>
+          <td>{{ item.ml_label|title }}</td>
+          <td><span class="badge severity-{{ 'high' if item.final_label == 'unsafe' else 'low' }}">{{ item.final_label|title }}</span></td>
+          <td>{{ (item.confidence_score * 100)|round(1) }}%</td>
+          <td>
+            {% if item.anomaly_detected %}
+              <span class="badge severity-medium">Yes ({{ item.anomaly_score or 0 }})</span>
+            {% else %}
+              <span class="badge severity-low">No</span>
+            {% endif %}
+          </td>
+          <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="8" class="text-center text-secondary py-4">No ML predictions logged yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

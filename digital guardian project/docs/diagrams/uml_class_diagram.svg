@@ -1,0 +1,244 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2100" height="1380" viewBox="0 0 2100 1380">
+  <defs>
+    <style>
+      .bg { fill: #fbf8ff; }
+      .title { font: 700 30px Arial, sans-serif; fill: #3d2a63; }
+      .sub { font: 400 15px Arial, sans-serif; fill: #67598a; }
+      .cls { fill: #ffffff; stroke: #9f8ec3; stroke-width: 2.1; rx: 12; ry: 12; }
+      .clsHead { fill: #6e57a5; }
+      .name { font: 700 19px Arial, sans-serif; fill: #ffffff; }
+      .body { font: 13px Consolas, 'Courier New', monospace; fill: #35264f; }
+      .rel { stroke: #7054aa; stroke-width: 2.3; fill: none; marker-end: url(#arrow); }
+      .dep { stroke: #a47bd8; stroke-width: 2.1; fill: none; stroke-dasharray: 8 6; marker-end: url(#arrow2); }
+      .note { font: 12px Arial, sans-serif; fill: #67598a; }
+    </style>
+    <marker id="arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#7054aa"/>
+    </marker>
+    <marker id="arrow2" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+      <path d="M0,0 L12,6 L0,12 z" fill="#a47bd8"/>
+    </marker>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2100" height="1380"/>
+  <text x="54" y="56" class="title">Digital Guardian UML Class Diagram</text>
+  <text x="54" y="82" class="sub">Main classes and relationships from Flask models, routes, and monitoring service</text>
+
+  <g transform="translate(40,130)">
+    <rect class="cls" x="0" y="0" width="330" height="180"/>
+    <rect class="clsHead" x="0" y="0" width="330" height="34"/>
+    <text class="name" x="92" y="23">AdminUser</text>
+    <text class="body" x="14" y="58">+ id: int</text>
+    <text class="body" x="14" y="80">+ username: str</text>
+    <text class="body" x="14" y="102">+ password_hash: str</text>
+    <text class="body" x="14" y="124">+ is_active: bool</text>
+    <text class="body" x="14" y="146">+ set_password(password)</text>
+    <text class="body" x="14" y="168">+ check_password(password)</text>
+  </g>
+
+  <g transform="translate(40,380)">
+    <rect class="cls" x="0" y="0" width="360" height="210"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="88" y="23">ParentUser</text>
+    <text class="body" x="14" y="58">+ id: int</text>
+    <text class="body" x="14" y="80">+ parent_name: str</text>
+    <text class="body" x="14" y="102">+ email: str</text>
+    <text class="body" x="14" y="124">+ phone_number: str</text>
+    <text class="body" x="14" y="146">+ children: ChildProfile[*]</text>
+    <text class="body" x="14" y="168">+ alerts/reports/settings</text>
+    <text class="body" x="14" y="190">+ notifications/activities</text>
+  </g>
+
+  <g transform="translate(500,140)">
+    <rect class="cls" x="0" y="0" width="360" height="250"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="96" y="23">ChildProfile</text>
+    <text class="body" x="14" y="58">+ id: int</text>
+    <text class="body" x="14" y="80">+ parent_id: int</text>
+    <text class="body" x="14" y="102">+ child_name: str</text>
+    <text class="body" x="14" y="124">+ child_username: str</text>
+    <text class="body" x="14" y="146">+ device_name: str</text>
+    <text class="body" x="14" y="168">+ screen_time_limit_hours: float</text>
+    <text class="body" x="14" y="190">+ is_active: bool</text>
+    <text class="body" x="14" y="212">+ set_password(password)</text>
+    <text class="body" x="14" y="234">+ check_password(password)</text>
+  </g>
+
+  <g transform="translate(500,470)">
+    <rect class="cls" x="0" y="0" width="330" height="160"/>
+    <rect class="clsHead" x="0" y="0" width="330" height="34"/>
+    <text class="name" x="78" y="23">RestrictedKeyword</text>
+    <text class="body" x="14" y="58">+ id: int</text>
+    <text class="body" x="14" y="80">+ keyword: str</text>
+    <text class="body" x="14" y="102">+ category: str</text>
+    <text class="body" x="14" y="124">+ severity: str</text>
+    <text class="body" x="14" y="146">+ active: bool</text>
+  </g>
+
+  <g transform="translate(960,120)">
+    <rect class="cls" x="0" y="0" width="360" height="200"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="98" y="23">BrowsingHistory</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ child_id: int</text>
+    <text class="body" x="14" y="102">+ search_query: str</text>
+    <text class="body" x="14" y="124">+ matched_keyword: str?</text>
+    <text class="body" x="14" y="146">+ is_restricted: bool</text>
+    <text class="body" x="14" y="168">+ search_time: datetime</text>
+  </g>
+
+  <g transform="translate(960,370)">
+    <rect class="cls" x="0" y="0" width="360" height="180"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="96" y="23">SafeSearchResult</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ child_id: int</text>
+    <text class="body" x="14" y="102">+ history_id: int?</text>
+    <text class="body" x="14" y="124">+ recommended_sites: JSON</text>
+    <text class="body" x="14" y="146">+ blocked_reason: str?</text>
+    <text class="body" x="14" y="168">+ is_restricted: bool</text>
+  </g>
+
+  <g transform="translate(960,610)">
+    <rect class="cls" x="0" y="0" width="360" height="180"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="122" y="23">ActivityLog</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ child_id: int</text>
+    <text class="body" x="14" y="102">+ event_type: str</text>
+    <text class="body" x="14" y="124">+ target_name: str</text>
+    <text class="body" x="14" y="146">+ is_restricted: bool</text>
+    <text class="body" x="14" y="168">+ occurred_at: datetime</text>
+  </g>
+
+  <g transform="translate(1420,130)">
+    <rect class="cls" x="0" y="0" width="330" height="170"/>
+    <rect class="clsHead" x="0" y="0" width="330" height="34"/>
+    <text class="name" x="132" y="23">Alert</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ child_id: int</text>
+    <text class="body" x="14" y="102">+ history_id: int?</text>
+    <text class="body" x="14" y="124">+ activity_id: int?</text>
+    <text class="body" x="14" y="146">+ severity/status: str</text>
+  </g>
+
+  <g transform="translate(1420,360)">
+    <rect class="cls" x="0" y="0" width="350" height="180"/>
+    <rect class="clsHead" x="0" y="0" width="350" height="34"/>
+    <text class="name" x="104" y="23">NotificationLog</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ child_id: int?</text>
+    <text class="body" x="14" y="102">+ trigger_type: str</text>
+    <text class="body" x="14" y="124">+ recipient: str</text>
+    <text class="body" x="14" y="146">+ delivery_status: str</text>
+    <text class="body" x="14" y="168">+ sent_at: datetime</text>
+  </g>
+
+  <g transform="translate(1420,620)">
+    <rect class="cls" x="0" y="0" width="330" height="170"/>
+    <rect class="clsHead" x="0" y="0" width="330" height="34"/>
+    <text class="name" x="124" y="23">Report</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ report_type: str</text>
+    <text class="body" x="14" y="102">+ screen_time_hours: float</text>
+    <text class="body" x="14" y="124">+ safe_browsing_score: float</text>
+    <text class="body" x="14" y="146">+ summary_json: JSON</text>
+  </g>
+
+  <g transform="translate(1420,870)">
+    <rect class="cls" x="0" y="0" width="350" height="180"/>
+    <rect class="clsHead" x="0" y="0" width="350" height="34"/>
+    <text class="name" x="130" y="23">Setting</text>
+    <text class="body" x="14" y="58">+ parent_id: int</text>
+    <text class="body" x="14" y="80">+ dark_mode: bool</text>
+    <text class="body" x="14" y="102">+ security_mode: str</text>
+    <text class="body" x="14" y="124">+ notification_enabled: bool</text>
+    <text class="body" x="14" y="146">+ emergency_alerts_enabled: bool</text>
+    <text class="body" x="14" y="168">+ weekly_report_day: str</text>
+  </g>
+
+  <g transform="translate(960,950)">
+    <rect class="cls" x="0" y="0" width="360" height="220"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="74" y="23">MonitoringService</text>
+    <text class="body" x="14" y="58">+ classify_text(text)</text>
+    <text class="body" x="14" y="80">+ analyze_search(...)</text>
+    <text class="body" x="14" y="102">+ log_activity(...)</text>
+    <text class="body" x="14" y="124">+ emergency_alert(...)</text>
+    <text class="body" x="14" y="146">+ recalculate_reports(parent_id)</text>
+    <text class="body" x="14" y="168">+ build_dashboard_payload(parent_id)</text>
+    <text class="body" x="14" y="190">+ summarize_week(...)</text>
+  </g>
+
+  <g transform="translate(500,760)">
+    <rect class="cls" x="0" y="0" width="330" height="200"/>
+    <rect class="clsHead" x="0" y="0" width="330" height="34"/>
+    <text class="name" x="96" y="23">Route Layer</text>
+    <text class="body" x="14" y="58">AuthBlueprint</text>
+    <text class="body" x="14" y="80">ChildrenBlueprint</text>
+    <text class="body" x="14" y="102">MonitoringBlueprint</text>
+    <text class="body" x="14" y="124">ReportsBlueprint</text>
+    <text class="body" x="14" y="146">SettingsBlueprint</text>
+    <text class="body" x="14" y="168">AdminBlueprint</text>
+    <text class="body" x="14" y="190">create_app()</text>
+  </g>
+
+  <g transform="translate(40,980)">
+    <rect class="cls" x="0" y="0" width="360" height="170"/>
+    <rect class="clsHead" x="0" y="0" width="360" height="34"/>
+    <text class="name" x="74" y="23">AdminAuditLog / Panel</text>
+    <text class="body" x="14" y="58">+ action, entity_type, details</text>
+    <text class="body" x="14" y="80">+ request_path, ip_address</text>
+    <text class="body" x="14" y="102">+ record_admin_action(...)</text>
+    <text class="body" x="14" y="124">+ get_admin_panel_settings()</text>
+    <text class="body" x="14" y="146">+ admin CRUD templates/routes</text>
+  </g>
+
+  <path class="rel" d="M400 470 C450 470, 460 300, 500 300"/>
+  <text class="note" x="420" y="360">1 parent owns many children</text>
+
+  <path class="rel" d="M860 250 C910 250, 920 220, 960 220"/>
+  <text class="note" x="874" y="208">child generates</text>
+
+  <path class="rel" d="M860 286 C930 286, 930 450, 960 450"/>
+  <text class="note" x="876" y="352">child gets safe result</text>
+
+  <path class="rel" d="M860 320 C930 320, 930 690, 960 690"/>
+  <text class="note" x="876" y="544">child logs activity</text>
+
+  <path class="rel" d="M1320 220 C1370 220, 1380 220, 1420 220"/>
+  <text class="note" x="1338" y="204">history may create alert</text>
+
+  <path class="rel" d="M1320 690 C1370 690, 1380 220, 1420 220"/>
+  <text class="note" x="1346" y="470">activity may create alert</text>
+
+  <path class="rel" d="M400 500 C840 500, 980 450, 1420 450"/>
+  <text class="note" x="878" y="486">parent receives notifications</text>
+
+  <path class="rel" d="M400 540 C850 540, 1040 700, 1420 700"/>
+  <text class="note" x="900" y="610">parent has summary report</text>
+
+  <path class="rel" d="M400 580 C870 580, 1050 960, 1420 960"/>
+  <text class="note" x="924" y="846">parent has one setting</text>
+
+  <path class="rel" d="M370 220 C500 220, 500 1060, 400 1060"/>
+  <text class="note" x="388" y="864">admin actions create audit logs</text>
+
+  <path class="dep" d="M830 860 C900 860, 900 1040, 960 1040"/>
+  <text class="note" x="850" y="910">routes call service methods</text>
+
+  <path class="dep" d="M1320 1030 C1360 1030, 1380 960, 1420 960"/>
+  <text class="note" x="1338" y="1006">service checks preferences</text>
+
+  <path class="dep" d="M1320 1080 C1380 1080, 1380 710, 1420 710"/>
+  <text class="note" x="1342" y="870">service recalculates report</text>
+
+  <path class="dep" d="M1320 1000 C1370 1000, 1380 450, 1420 450"/>
+  <text class="note" x="1336" y="744">service creates notification</text>
+
+  <path class="dep" d="M1320 970 C1360 970, 1380 230, 1420 230"/>
+  <text class="note" x="1336" y="600">service creates alert</text>
+
+  <path class="dep" d="M1320 1015 C1380 1015, 900 520, 830 520"/>
+  <text class="note" x="1010" y="760">service uses restricted keywords</text>
+</svg>

@@ -1,0 +1,29 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{{ 'Edit Parent User' if parent else 'Add Parent User' }}{% endblock %}
+{% block page_subtitle %}Create or update parent records for the monitoring platform.{% endblock %}
+{% block content %}
+<div class="panel-card form-card">
+  <form method="post" class="row g-4">
+    <div class="col-md-6">
+      <label class="form-label">Parent Name</label>
+      <input class="form-control" name="parent_name" value="{{ parent.parent_name if parent else '' }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Email</label>
+      <input type="email" class="form-control" name="email" value="{{ parent.email if parent else '' }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Phone Number</label>
+      <input class="form-control" name="phone_number" value="{{ parent.phone_number if parent else '' }}" required>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">{{ 'Reset Password (optional)' if parent else 'Password' }}</label>
+      <input type="password" class="form-control" name="password" {% if not parent %}required{% endif %}>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary rounded-pill px-4">Save Parent User</button>
+      <a class="btn btn-outline-secondary rounded-pill px-4" href="{{ url_for('admin.parents') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

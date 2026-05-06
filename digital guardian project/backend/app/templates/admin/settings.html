@@ -1,0 +1,42 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Settings Management{% endblock %}
+{% block page_subtitle %}Manage admin theme, security mode, help/support, and overall monitoring state.{% endblock %}
+{% block content %}
+<div class="panel-card form-card">
+  <form method="post" class="row g-4">
+    <div class="col-md-6">
+      <label class="form-label">Theme</label>
+      <select class="form-select" name="theme">
+        {% for value in ['pastel-blue', 'executive-light', 'soft-graphite'] %}
+        <option value="{{ value }}" {% if settings.theme == value %}selected{% endif %}>{{ value|replace('-', ' ')|title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Security Mode</label>
+      <select class="form-select" name="security_mode">
+        {% for value in ['strict', 'enhanced', 'presentation-safe'] %}
+        <option value="{{ value }}" {% if settings.security_mode == value %}selected{% endif %}>{{ value|replace('-', ' ')|title }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">Help / Support Email</label>
+      <input type="email" class="form-control" name="support_email" value="{{ settings.support_email }}">
+    </div>
+    <div class="col-md-6">
+      <label class="form-label">App Info</label>
+      <input class="form-control" name="app_info" value="{{ settings.app_info }}">
+    </div>
+    <div class="col-12">
+      <div class="form-check form-switch">
+        <input class="form-check-input" type="checkbox" name="monitoring_enabled" {% if settings.monitoring_enabled %}checked{% endif %}>
+        <label class="form-check-label">Active Monitoring Status Enabled</label>
+      </div>
+    </div>
+    <div class="col-12">
+      <button class="btn btn-primary rounded-pill px-4">Save Settings</button>
+    </div>
+  </form>
+</div>
+{% endblock %}

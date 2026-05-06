@@ -1,0 +1,79 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Reports Management{% endblock %}
+{% block page_subtitle %}Weekly, monthly, screen time, and safe browsing reports with visual charts.{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-xl-7">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Safe Browsing Score Trend</h3><p>Average report score over recent reporting windows.</p></div></div>
+      <canvas id="scoreChart" height="120"></canvas>
+    </div>
+  </div>
+  <div class="col-xl-5">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>Restricted Attempts Trend</h3><p>Restricted search counts pulled from saved reports.</p></div></div>
+      <canvas id="restrictedChart" height="120"></canvas>
+    </div>
+  </div>
+</div>
+<div class="row g-4 mb-4">
+  <div class="col-xl-12">
+    <div class="panel-card">
+      <div class="panel-header"><div><h3>AI Risk Trend</h3><p>Average per-report behavior risk score generated from usage patterns and anomalies.</p></div></div>
+      <canvas id="riskChart" height="90"></canvas>
+    </div>
+  </div>
+</div>
+<div class="panel-card">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Type</th><th>Week</th><th>Month</th><th>Screen Time</th><th>Restricted Attempts</th><th>Safe Score</th><th>AI Risk</th><th>Top Risk Child</th><th>Created</th></tr></thead>
+      <tbody>
+        {% for report in reports %}
+        <tr>
+          <td>{{ report.report_type|title }}</td>
+          <td>{{ report.week_label or '-' }}</td>
+          <td>{{ report.month_label or '-' }}</td>
+          <td>{{ report.screen_time_hours }} hrs</td>
+          <td>{{ report.restricted_attempts_count }}</td>
+          <td>{{ report.safe_browsing_score }}%</td>
+          <td>{{ (report.summary_json or {}).get('ai_summary', {}).get('average_risk_score', 0) }}</td>
+          <td>{{ (report.summary_json or {}).get('ai_summary', {}).get('highest_risk_child', '-') }}</td>
+          <td>{{ report.created_at.strftime('%d %b %Y') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="9" class="text-center text-secondary py-4">No reports generated yet.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+  new Chart(document.getElementById('scoreChart'), {
+    type: 'bar',
+    data: {
+      labels: {{ monthly_labels|safe }},
+      datasets: [{ label: 'Safe Score', data: {{ monthly_scores|safe }}, backgroundColor: '#5b8cff', borderRadius: 14 }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+  new Chart(document.getElementById('restrictedChart'), {
+    type: 'line',
+    data: {
+      labels: {{ monthly_labels|safe }},
+      datasets: [{ label: 'Restricted Attempts', data: {{ restricted_counts|safe }}, borderColor: '#ff6c8a', backgroundColor: 'rgba(255,108,138,0.14)', fill: true, tension: 0.35 }]
+    },
+    options: { plugins: { legend: { display: false } } }
+  });
+  new Chart(document.getElementById('riskChart'), {
+    type: 'line',
+    data: {
+      labels: {{ monthly_labels|safe }},
+      datasets: [{ label: 'AI Risk Score', data: {{ average_risk_scores|safe }}, borderColor: '#ff9f43', backgroundColor: 'rgba(255,159,67,0.16)', fill: true, tension: 0.35 }]
+    },
+    options: { plugins: { legend: { display: false } }, scales: { y: { suggestedMin: 0, suggestedMax: 100 } } }
+  });
+</script>
+{% endblock %}

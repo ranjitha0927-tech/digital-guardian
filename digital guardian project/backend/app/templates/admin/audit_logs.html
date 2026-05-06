@@ -1,0 +1,46 @@
+{% extends "admin/base.html" %}
+{% block title %}Audit Logs | Digital Guardian Admin{% endblock %}
+{% block page_title %}Audit Logs{% endblock %}
+{% block page_subtitle %}Chronological record of admin sign-ins and backend changes.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <div>
+      <h3>Admin Activity Trail</h3>
+      <p>Every create, update, delete, login, and logout action is recorded here.</p>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Admin</th>
+          <th>Action</th>
+          <th>Entity</th>
+          <th>Details</th>
+          <th>Path</th>
+          <th>IP</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for log in logs %}
+        <tr>
+          <td>{{ log.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+          <td>{{ log.admin.username if log.admin else '-' }}</td>
+          <td><span class="badge bg-primary-subtle text-primary">{{ log.action|title }}</span></td>
+          <td>{{ log.entity_type|replace('_', ' ')|title }}</td>
+          <td>{{ log.entity_name or log.details or '-' }}</td>
+          <td>{{ log.request_path or '-' }}</td>
+          <td>{{ log.ip_address or '-' }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="7" class="text-center text-secondary py-4">No audit logs available yet.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

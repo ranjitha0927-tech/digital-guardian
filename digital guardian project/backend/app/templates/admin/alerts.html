@@ -1,0 +1,34 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Alerts Monitoring{% endblock %}
+{% block page_subtitle %}Review real-time alerts triggered by restricted searches and suspicious activity.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <div class="d-flex gap-2">
+      <a class="btn {% if not severity %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.alerts') }}">All</a>
+      <a class="btn {% if severity == 'critical' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.alerts', severity='critical') }}">Critical</a>
+      <a class="btn {% if severity == 'high' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.alerts', severity='high') }}">High</a>
+      <a class="btn {% if severity == 'medium' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.alerts', severity='medium') }}">Medium</a>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Title</th><th>Description</th><th>Child</th><th>Severity</th><th>Status</th><th>Created</th></tr></thead>
+      <tbody>
+        {% for alert in alerts %}
+        <tr>
+          <td>{{ alert.title }}</td>
+          <td>{{ alert.description }}</td>
+          <td>{{ alert.child.child_name if alert.child else '-' }}</td>
+          <td><span class="badge severity-{{ alert.severity }}">{{ alert.severity|title }}</span></td>
+          <td>{{ alert.status|title }}</td>
+          <td>{{ alert.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-secondary py-4">No alerts available.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

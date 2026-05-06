@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Restricted Keywords{% endblock %}
+{% block page_subtitle %}Control blocked terms and categories used by the monitoring engine.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <form class="d-flex gap-2" method="get">
+      <input class="form-control" name="search" value="{{ search }}" placeholder="Search keyword or category">
+      <button class="btn btn-outline-primary rounded-pill px-4">Search</button>
+    </form>
+    <a class="btn btn-primary rounded-pill px-4" href="{{ url_for('admin.create_keyword') }}">Add Keyword</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Keyword</th><th>Category</th><th>Severity</th><th>Status</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for keyword in keywords %}
+        <tr>
+          <td>{{ keyword.keyword }}</td>
+          <td>{{ keyword.category }}</td>
+          <td><span class="badge severity-{{ keyword.severity }}">{{ keyword.severity|title }}</span></td>
+          <td>{{ 'Active' if keyword.active else 'Inactive' }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.edit_keyword', keyword_id=keyword.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.delete_keyword', keyword_id=keyword.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this keyword?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-secondary py-4">No restricted keywords found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

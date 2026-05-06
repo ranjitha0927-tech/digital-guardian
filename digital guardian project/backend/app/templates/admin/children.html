@@ -1,0 +1,38 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Child Profiles{% endblock %}
+{% block page_subtitle %}Track parent-child mappings and edit monitoring-ready child details.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <form class="d-flex gap-2" method="get">
+      <input class="form-control" name="search" value="{{ search }}" placeholder="Search by child, school, or parent">
+      <button class="btn btn-outline-primary rounded-pill px-4">Search</button>
+    </form>
+    <a class="btn btn-primary rounded-pill px-4" href="{{ url_for('admin.create_child') }}">Add Child</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Child</th><th>Parent</th><th>Grade</th><th>School</th><th>Device</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for child in children %}
+        <tr>
+          <td>{{ child.child_name }} <div class="text-secondary small">{{ child.age }} yrs • {{ child.gender }}</div></td>
+          <td>{{ child.parent.parent_name if child.parent else '-' }}</td>
+          <td>{{ child.grade }}</td>
+          <td>{{ child.school_name }}</td>
+          <td>{{ child.device_name }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.edit_child', child_id=child.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.delete_child', child_id=child.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this child profile?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-secondary py-4">No child profiles found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

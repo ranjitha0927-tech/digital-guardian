@@ -1,0 +1,230 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="2200" height="1520" viewBox="0 0 2200 1520">
+  <defs>
+    <style>
+      .title { font: 700 30px Arial, sans-serif; fill: #16324f; }
+      .subtitle { font: 400 15px Arial, sans-serif; fill: #49627a; }
+      .head { font: 700 18px Arial, sans-serif; fill: #ffffff; }
+      .row { font: 13px Consolas, 'Courier New', monospace; fill: #16324f; }
+      .small { font: 12px Arial, sans-serif; fill: #49627a; }
+      .line { stroke: #6588a6; stroke-width: 2.2; fill: none; }
+      .bg { fill: #f5f8fc; }
+      .card { fill: #ffffff; stroke: #90aeca; stroke-width: 2; rx: 12; ry: 12; }
+      .cardHead { fill: #2f5d8a; rx: 12; ry: 12; }
+      .fk { fill: #bf5b04; }
+      .pk { fill: #0a6c3f; }
+    </style>
+  </defs>
+
+  <rect class="bg" x="0" y="0" width="2200" height="1520"/>
+  <text x="56" y="56" class="title">Digital Guardian Database Tables</text>
+  <text x="56" y="82" class="subtitle">Derived from <tspan font-weight="700">backend/app/models/__init__.py</tspan> and <tspan font-weight="700">database/schema.sql</tspan></text>
+
+  <g transform="translate(40,120)">
+    <rect class="card" x="0" y="0" width="320" height="164"/>
+    <rect class="cardHead" x="0" y="0" width="320" height="34"/>
+    <text class="head" x="14" y="23">parent_users</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80">parent_name : VARCHAR(120)</text>
+    <text class="row" x="14" y="102">email : VARCHAR(160) UNIQUE</text>
+    <text class="row" x="14" y="124">phone_number : VARCHAR(40)</text>
+    <text class="row" x="14" y="146">password_hash, created_at</text>
+  </g>
+
+  <g transform="translate(420,120)">
+    <rect class="card" x="0" y="0" width="300" height="142"/>
+    <rect class="cardHead" x="0" y="0" width="300" height="34"/>
+    <text class="head" x="14" y="23">admin_users</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80">username : VARCHAR(80) UNIQUE</text>
+    <text class="row" x="14" y="102">password_hash : VARCHAR(255)</text>
+    <text class="row" x="14" y="124">is_active, last_login_at, created_at</text>
+  </g>
+
+  <g transform="translate(40,340)">
+    <rect class="card" x="0" y="0" width="360" height="252"/>
+    <rect class="cardHead" x="0" y="0" width="360" height="34"/>
+    <text class="head" x="14" y="23">child_profiles</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102">child_name : VARCHAR(120)</text>
+    <text class="row" x="14" y="124">child_username : VARCHAR(80) UNIQUE</text>
+    <text class="row" x="14" y="146">password_hash : VARCHAR(255)</text>
+    <text class="row" x="14" y="168">age, gender, grade, school_name</text>
+    <text class="row" x="14" y="190">parent_contact, device_name</text>
+    <text class="row" x="14" y="212">screen_time_limit_hours, notes</text>
+    <text class="row" x="14" y="234">is_active, created_at</text>
+  </g>
+
+  <g transform="translate(460,340)">
+    <rect class="card" x="0" y="0" width="320" height="164"/>
+    <rect class="cardHead" x="0" y="0" width="320" height="34"/>
+    <text class="head" x="14" y="23">restricted_keywords</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80">keyword : VARCHAR(120) UNIQUE</text>
+    <text class="row" x="14" y="102">category : VARCHAR(80)</text>
+    <text class="row" x="14" y="124">severity : VARCHAR(20)</text>
+    <text class="row" x="14" y="146">active, created_at</text>
+  </g>
+
+  <g transform="translate(860,120)">
+    <rect class="card" x="0" y="0" width="370" height="208"/>
+    <rect class="cardHead" x="0" y="0" width="370" height="34"/>
+    <text class="head" x="14" y="23">browsing_history</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102"><tspan class="fk">FK</tspan> child_id : INT</text>
+    <text class="row" x="14" y="124">search_query, site_url, device_name</text>
+    <text class="row" x="14" y="146">activity_type : VARCHAR(40)</text>
+    <text class="row" x="14" y="168">matched_keyword, matched_category</text>
+    <text class="row" x="14" y="190">is_restricted, search_time, created_at</text>
+  </g>
+
+  <g transform="translate(860,390)">
+    <rect class="card" x="0" y="0" width="380" height="186"/>
+    <rect class="cardHead" x="0" y="0" width="380" height="34"/>
+    <text class="head" x="14" y="23">safe_search_results</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102"><tspan class="fk">FK</tspan> child_id : INT</text>
+    <text class="row" x="14" y="124"><tspan class="fk">FK</tspan> history_id : INT NULL</text>
+    <text class="row" x="14" y="146">search_query, matched_keyword, search_topic</text>
+    <text class="row" x="14" y="168">is_restricted, recommended_sites, blocked_reason</text>
+  </g>
+
+  <g transform="translate(860,640)">
+    <rect class="card" x="0" y="0" width="370" height="186"/>
+    <rect class="cardHead" x="0" y="0" width="370" height="34"/>
+    <text class="head" x="14" y="23">activity_logs</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102"><tspan class="fk">FK</tspan> child_id : INT</text>
+    <text class="row" x="14" y="124">event_type, app_name, target_name</text>
+    <text class="row" x="14" y="146">target_url, keyword, matched_category</text>
+    <text class="row" x="14" y="168">details, is_restricted, occurred_at, created_at</text>
+  </g>
+
+  <g transform="translate(1320,120)">
+    <rect class="card" x="0" y="0" width="340" height="186"/>
+    <rect class="cardHead" x="0" y="0" width="340" height="34"/>
+    <text class="head" x="14" y="23">alerts</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102"><tspan class="fk">FK</tspan> child_id : INT</text>
+    <text class="row" x="14" y="124"><tspan class="fk">FK</tspan> history_id, activity_id</text>
+    <text class="row" x="14" y="146">title, description, severity</text>
+    <text class="row" x="14" y="168">status, created_at</text>
+  </g>
+
+  <g transform="translate(1320,370)">
+    <rect class="card" x="0" y="0" width="360" height="186"/>
+    <rect class="cardHead" x="0" y="0" width="360" height="34"/>
+    <text class="head" x="14" y="23">notifications</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102"><tspan class="fk">FK</tspan> child_id : INT NULL</text>
+    <text class="row" x="14" y="124">channel, recipient, provider, trigger_type</text>
+    <text class="row" x="14" y="146">title, message, delivery_status</text>
+    <text class="row" x="14" y="168">meta_json, sent_at, created_at</text>
+  </g>
+
+  <g transform="translate(1320,620)">
+    <rect class="card" x="0" y="0" width="330" height="164"/>
+    <rect class="cardHead" x="0" y="0" width="330" height="34"/>
+    <text class="head" x="14" y="23">reports</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT</text>
+    <text class="row" x="14" y="102">report_type, week_label, month_label</text>
+    <text class="row" x="14" y="124">screen_time_hours, restricted_attempts_count</text>
+    <text class="row" x="14" y="146">safe_browsing_score, summary_json, created_at</text>
+  </g>
+
+  <g transform="translate(1720,120)">
+    <rect class="card" x="0" y="0" width="330" height="164"/>
+    <rect class="cardHead" x="0" y="0" width="330" height="34"/>
+    <text class="head" x="14" y="23">settings</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> parent_id : INT UNIQUE</text>
+    <text class="row" x="14" y="102">dark_mode, help_email, security_mode</text>
+    <text class="row" x="14" y="124">notification_enabled, emergency_alerts_enabled</text>
+    <text class="row" x="14" y="146">weekly_report_day, created_at, updated_at</text>
+  </g>
+
+  <g transform="translate(1720,360)">
+    <rect class="card" x="0" y="0" width="340" height="164"/>
+    <rect class="cardHead" x="0" y="0" width="340" height="34"/>
+    <text class="head" x="14" y="23">admin_panel_settings</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80">theme, security_mode, support_email</text>
+    <text class="row" x="14" y="102">app_info, monitoring_enabled</text>
+    <text class="row" x="14" y="124">created_at, updated_at</text>
+  </g>
+
+  <g transform="translate(1720,600)">
+    <rect class="card" x="0" y="0" width="360" height="186"/>
+    <rect class="cardHead" x="0" y="0" width="360" height="34"/>
+    <text class="head" x="14" y="23">admin_audit_logs</text>
+    <text class="row" x="14" y="58"><tspan class="pk">PK</tspan> id : INT</text>
+    <text class="row" x="14" y="80"><tspan class="fk">FK</tspan> admin_id : INT NULL</text>
+    <text class="row" x="14" y="102">action, entity_type, entity_name</text>
+    <text class="row" x="14" y="124">details, request_path, ip_address</text>
+    <text class="row" x="14" y="146">created_at</text>
+  </g>
+
+  <path class="line" d="M320 222 C360 222, 380 250, 420 346"/>
+  <text class="small" x="338" y="230">1 to many</text>
+
+  <path class="line" d="M320 206 C560 206, 700 206, 860 206"/>
+  <text class="small" x="560" y="194">1 to many</text>
+
+  <path class="line" d="M320 214 C610 214, 720 454, 860 454"/>
+  <text class="small" x="626" y="302">1 to many</text>
+
+  <path class="line" d="M320 220 C650 220, 720 704, 860 704"/>
+  <text class="small" x="658" y="494">1 to many</text>
+
+  <path class="line" d="M320 226 C920 226, 1080 214, 1320 214"/>
+  <text class="small" x="1030" y="202">1 to many</text>
+
+  <path class="line" d="M320 232 C980 232, 1100 464, 1320 464"/>
+  <text class="small" x="1070" y="346">1 to many</text>
+
+  <path class="line" d="M320 238 C990 238, 1140 702, 1320 702"/>
+  <text class="small" x="1086" y="538">1 to many</text>
+
+  <path class="line" d="M320 244 C1240 244, 1520 202, 1720 202"/>
+  <text class="small" x="1470" y="190">1 to 1</text>
+
+  <path class="line" d="M400 462 C630 462, 690 216, 860 216"/>
+  <text class="small" x="626" y="336">many to 1 child</text>
+
+  <path class="line" d="M400 482 C630 482, 700 460, 860 460"/>
+  <text class="small" x="630" y="472">many to 1 child</text>
+
+  <path class="line" d="M400 502 C630 502, 700 708, 860 708"/>
+  <text class="small" x="630" y="628">many to 1 child</text>
+
+  <path class="line" d="M400 522 C760 522, 920 214, 1320 214"/>
+  <text class="small" x="820" y="332">child to alerts</text>
+
+  <path class="line" d="M400 542 C880 542, 1080 464, 1320 464"/>
+  <text class="small" x="904" y="494">child to notifications</text>
+
+  <path class="line" d="M1230 214 C1265 214, 1280 214, 1320 214"/>
+  <path class="line" d="M1240 470 C1280 470, 1290 470, 1320 470"/>
+  <path class="line" d="M1230 708 C1270 708, 1288 708, 1320 708"/>
+
+  <path class="line" d="M1240 478 C1280 478, 1290 238, 1320 238"/>
+  <text class="small" x="1260" y="332">history_id</text>
+
+  <path class="line" d="M1230 726 C1280 726, 1290 250, 1320 250"/>
+  <text class="small" x="1260" y="580">activity_id</text>
+
+  <path class="line" d="M1660 214 C1700 214, 1708 690, 1720 690"/>
+  <text class="small" x="1680" y="468">admin_id</text>
+
+  <rect x="54" y="1430" width="560" height="58" rx="10" ry="10" fill="#ffffff" stroke="#90aeca" stroke-width="1.5"/>
+  <text class="small" x="72" y="1456">Legend:</text>
+  <text class="small" x="132" y="1456"><tspan class="pk">PK</tspan> Primary Key</text>
+  <text class="small" x="280" y="1456"><tspan class="fk">FK</tspan> Foreign Key</text>
+  <text class="small" x="398" y="1456">Relationships are simplified for readability.</text>
+</svg>

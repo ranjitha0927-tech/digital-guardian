@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Parent Users{% endblock %}
+{% block page_subtitle %}Manage registered parent accounts, credentials, and search filters.{% endblock %}
+{% block content %}
+<div class="panel-card">
+  <div class="panel-header">
+    <form class="d-flex gap-2" method="get">
+      <input class="form-control" name="search" value="{{ search }}" placeholder="Search parents by name or email">
+      <button class="btn btn-outline-primary rounded-pill px-4">Search</button>
+    </form>
+    <a class="btn btn-primary rounded-pill px-4" href="{{ url_for('admin.create_parent') }}">Add Parent</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Name</th><th>Email</th><th>Children</th><th>Created</th><th class="text-end">Actions</th></tr></thead>
+      <tbody>
+        {% for parent in parents %}
+        <tr>
+          <td>{{ parent.parent_name }}</td>
+          <td>{{ parent.email }}</td>
+          <td>{{ parent.children|length }}</td>
+          <td>{{ parent.created_at.strftime('%d %b %Y') }}</td>
+          <td class="text-end">
+            <a class="btn btn-sm btn-outline-primary" href="{{ url_for('admin.edit_parent', parent_id=parent.id) }}">Edit</a>
+            <form method="post" action="{{ url_for('admin.delete_parent', parent_id=parent.id) }}" class="d-inline">
+              <button class="btn btn-sm btn-outline-danger" onclick="return confirm('Delete this parent user?')">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="5" class="text-center text-secondary py-4">No parent users found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

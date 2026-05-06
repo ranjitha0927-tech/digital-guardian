@@ -1,0 +1,37 @@
+{% extends "admin/base.html" %}
+{% block page_title %}Browsing History{% endblock %}
+{% block page_subtitle %}Visual monitoring of child search history with safe vs unsafe behavior summary.{% endblock %}
+{% block content %}
+<div class="row g-4 mb-4">
+  <div class="col-md-6"><div class="metric-card"><div class="metric-label">Safe Sessions</div><div class="metric-value">{{ safe_count }}</div></div></div>
+  <div class="col-md-6"><div class="metric-card"><div class="metric-label">Restricted Attempts</div><div class="metric-value">{{ restricted_count }}</div></div></div>
+</div>
+<div class="panel-card">
+  <div class="panel-header">
+    <div class="d-flex gap-2">
+      <a class="btn {% if not mode %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.history') }}">All</a>
+      <a class="btn {% if mode == 'safe' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.history', mode='safe') }}">Safe</a>
+      <a class="btn {% if mode == 'restricted' %}btn-primary{% else %}btn-outline-primary{% endif %} rounded-pill" href="{{ url_for('admin.history', mode='restricted') }}">Restricted</a>
+    </div>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle admin-table">
+      <thead><tr><th>Query</th><th>Child</th><th>Website</th><th>Match</th><th>Status</th><th>Time</th></tr></thead>
+      <tbody>
+        {% for item in history %}
+        <tr class="{% if item.is_restricted %}table-danger-row{% endif %}">
+          <td>{{ item.search_query }}</td>
+          <td>{{ item.child.child_name if item.child else '-' }}</td>
+          <td>{{ item.site_url or '-' }}</td>
+          <td>{{ item.matched_keyword or '-' }} <div class="small text-secondary">{{ item.matched_category or '' }}</div></td>
+          <td><span class="badge {% if item.is_restricted %}bg-danger-subtle text-danger{% else %}bg-success-subtle text-success{% endif %}">{{ 'Restricted' if item.is_restricted else 'Safe' }}</span></td>
+          <td>{{ item.created_at.strftime('%d %b %Y %I:%M %p') }}</td>
+        </tr>
+        {% else %}
+        <tr><td colspan="6" class="text-center text-secondary py-4">No browsing history found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

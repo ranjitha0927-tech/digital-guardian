@@ -1,0 +1,33 @@
+{% extends "admin/base.html" %}
+{% block page_title %}{{ 'Edit Child Profile' if child else 'Add Child Profile' }}{% endblock %}
+{% block page_subtitle %}Maintain parent-child mapping for monitoring and reporting.{% endblock %}
+{% block content %}
+<div class="panel-card form-card">
+  <form method="post" class="row g-4">
+    <div class="col-md-6">
+      <label class="form-label">Parent User</label>
+      <select class="form-select" name="parent_id" required>
+        <option value="">Select Parent</option>
+        {% for parent in parents %}
+        <option value="{{ parent.id }}" {% if child and child.parent_id == parent.id %}selected{% endif %}>{{ parent.parent_name }} ({{ parent.email }})</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="col-md-6"><label class="form-label">Child Name</label><input class="form-control" name="child_name" value="{{ child.child_name if child else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">Child Username</label><input class="form-control" name="child_username" value="{{ child.child_username if child else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">{{ 'Reset Password (optional)' if child else 'Password' }}</label><input type="password" class="form-control" name="password" {% if not child %}required{% endif %}></div>
+    <div class="col-md-3"><label class="form-label">Age</label><input type="number" class="form-control" name="age" value="{{ child.age if child else '' }}" required></div>
+    <div class="col-md-3"><label class="form-label">Gender</label><input class="form-control" name="gender" value="{{ child.gender if child else '' }}" required></div>
+    <div class="col-md-3"><label class="form-label">Grade</label><input class="form-control" name="grade" value="{{ child.grade if child else '' }}" required></div>
+    <div class="col-md-3"><label class="form-label">Parent Contact</label><input class="form-control" name="parent_contact" value="{{ child.parent_contact if child else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">School Name</label><input class="form-control" name="school_name" value="{{ child.school_name if child else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">Device Name</label><input class="form-control" name="device_name" value="{{ child.device_name if child else '' }}" required></div>
+    <div class="col-md-6"><label class="form-label">Screen Time Limit (Hours)</label><input type="number" step="0.5" class="form-control" name="screen_time_limit_hours" value="{{ child.screen_time_limit_hours if child else 2.0 }}" required></div>
+    <div class="col-12"><label class="form-label">Notes</label><textarea class="form-control" name="notes" rows="4">{{ child.notes if child else '' }}</textarea></div>
+    <div class="col-12">
+      <button class="btn btn-primary rounded-pill px-4">Save Child Profile</button>
+      <a class="btn btn-outline-secondary rounded-pill px-4" href="{{ url_for('admin.children') }}">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
